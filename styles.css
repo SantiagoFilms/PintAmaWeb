@@ -454,10 +454,6 @@ td select {
     height: 42px;
   }
 
-  #btn-export {
-    grid-column: 1 / -1;
-  }
-
   .app-shell {
     grid-template-areas:
       "form"
@@ -627,9 +623,5 @@ td select {
 @media (max-width: 420px) {
   .top-actions {
     grid-template-columns: 1fr;
-  }
-
-  #btn-export {
-    grid-column: auto;
   }
 }
