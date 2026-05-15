@@ -7,10 +7,13 @@
   --muted: #667085;
   --blue: #234e9d;
   --blue-dark: #173b78;
+  --blue-soft: #e8f0ff;
+  --gold: #d7b75a;
+  --gold-soft: #fff4bf;
   --green: #2f9e44;
   --yellow: #fff2b8;
   --danger: #c92a2a;
-  --shadow: 0 12px 28px rgba(20, 32, 54, 0.08);
+  --shadow: 0 18px 42px rgba(23, 43, 87, 0.12);
 }
 
 * {
@@ -20,7 +23,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background:
+    linear-gradient(135deg, rgba(35, 78, 157, 0.13) 0%, rgba(245, 247, 251, 0.96) 38%, rgba(255, 244, 191, 0.84) 100%),
+    linear-gradient(180deg, #ffffff 0%, #f3f6fb 100%);
+  background-attachment: fixed;
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
@@ -36,13 +42,15 @@ body {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 18px;
-  background: var(--panel);
-  border-bottom: 3px solid var(--blue);
-  box-shadow: 0 1px 0 rgba(20, 32, 54, 0.06);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(235, 241, 253, 0.96) 100%);
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, var(--blue), var(--gold)) 1;
+  box-shadow: 0 12px 28px rgba(23, 43, 87, 0.1);
+  backdrop-filter: blur(12px);
 }
 
 .brand {
-  color: var(--blue);
+  color: var(--blue-dark);
   font-size: 20px;
   font-weight: 800;
 }
@@ -65,29 +73,36 @@ button {
   height: 34px;
   border: 0;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
   color: var(--text);
   background: var(--panel-soft);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
 }
 
 button:hover {
   filter: brightness(0.97);
 }
 
+button:active {
+  transform: translateY(1px);
+}
+
 button.primary {
-  background: var(--blue);
+  background: linear-gradient(135deg, #2f5db4, var(--blue-dark));
   color: #fff;
+  box-shadow: 0 10px 22px rgba(35, 78, 157, 0.22);
 }
 
 button.secondary {
-  background: #e7edf7;
+  background: linear-gradient(135deg, #edf4ff, #dce8f8);
   color: var(--blue-dark);
 }
 
 button.ghost {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.72);
   color: var(--muted);
   border: 1px solid var(--line);
 }
@@ -124,13 +139,14 @@ button.full {
 }
 
 .panel {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(217, 224, 234, 0.92);
+  border-radius: 12px;
   box-shadow: var(--shadow);
   padding: 14px;
   min-width: 0;
   overflow: auto;
+  backdrop-filter: blur(10px);
 }
 
 .items-panel {
@@ -207,10 +223,12 @@ input,
 select,
 textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin-top: 5px;
   border: 1px solid var(--line);
-  border-radius: 5px;
-  background: #fff;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
   color: var(--text);
   font: inherit;
   outline: none;
@@ -220,6 +238,25 @@ input,
 select {
   height: 34px;
   padding: 0 9px;
+}
+
+input[type="date"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: left;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  min-height: 1.2em;
+  text-align: left;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-left: auto;
 }
 
 textarea {
@@ -356,7 +393,7 @@ td select {
 
 .summary .total {
   min-height: 44px;
-  background: #eaf0fb;
+  background: linear-gradient(135deg, #eaf0fb, #f8edc7);
   color: var(--blue);
   font-size: 16px;
 }
@@ -383,21 +420,27 @@ td select {
 @media (max-width: 760px) {
   body {
     font-size: 15px;
+    background:
+      linear-gradient(160deg, rgba(35, 78, 157, 0.15) 0%, rgba(255, 255, 255, 0.96) 34%, rgba(255, 244, 191, 0.9) 100%),
+      #f5f7fb;
+    padding-bottom: 18px;
   }
 
   .topbar {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
-    padding: 10px 12px;
+    padding: 14px 12px 16px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(232, 240, 255, 0.96));
   }
 
   .brand {
-    font-size: 18px;
+    font-size: 22px;
+    letter-spacing: 0;
   }
 
   .subtitle {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .top-actions {
@@ -427,9 +470,9 @@ td select {
   }
 
   .panel {
-    border-radius: 10px;
-    padding: 12px;
-    box-shadow: 0 4px 14px rgba(20, 32, 54, 0.06);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 12px 30px rgba(23, 43, 87, 0.12);
   }
 
   .grid.two {
@@ -441,6 +484,18 @@ td select {
   select {
     min-height: 42px;
     font-size: 16px;
+    border-radius: 10px;
+  }
+
+  input[type="date"] {
+    height: 42px;
+    line-height: 42px;
+    padding: 0 14px;
+  }
+
+  input[type="date"]::-webkit-date-and-time-value {
+    padding: 0;
+    text-align: left;
   }
 
   textarea {
@@ -494,9 +549,10 @@ td select {
     display: grid;
     gap: 8px;
     padding: 12px;
-    background: #fff5bd;
+    background: linear-gradient(160deg, #fff7bd 0%, #fffce4 100%);
     border: 1px solid #d5dfef;
     border-radius: 10px;
+    box-shadow: 0 8px 18px rgba(23, 43, 87, 0.08);
   }
 
   tbody tr.selected {
@@ -541,6 +597,7 @@ td select {
   td select {
     height: 42px;
     min-height: 42px;
+    border-radius: 10px;
   }
 
   .delete-line {
