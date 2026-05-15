@@ -339,21 +339,21 @@ td {
 }
 
 th:nth-child(1) {
-  width: 42%;
+  width: 39%;
 }
 
 th:nth-child(2) {
-  width: 72px;
+  width: 92px;
 }
 
 th:nth-child(3),
 th:nth-child(4),
 th:nth-child(5) {
-  width: 92px;
+  width: 108px;
 }
 
 th:nth-child(6) {
-  width: 42px;
+  width: 82px;
 }
 
 tbody tr {
@@ -382,11 +382,14 @@ td select {
 }
 
 .delete-line {
-  width: 30px;
+  width: 100%;
   height: 28px;
-  padding: 0;
+  padding: 0 8px;
   background: #fff1f1;
   color: var(--danger);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .detail-box {
