@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PintAma Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">PintAma Web</div>
+      <div class="subtitle">Crear documentos para importar en PintAma PC</div>
+    </div>
+    <div class="top-actions">
+      <button id="btn-new" type="button" class="ghost">Nuevo</button>
+      <button id="btn-save" type="button" class="secondary">Guardar borrador</button>
+      <button id="btn-export" type="button" class="primary">Exportar JSON</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="panel form-panel" aria-label="Datos del documento">
+      <div class="section-title">Documento</div>
+      <div class="grid two">
+        <label>
+          Tipo
+          <select id="tipoDocumento">
+            <option value="cotizacion">Presupuesto</option>
+            <option value="factura">Factura</option>
+          </select>
+        </label>
+        <label>
+          Fecha
+          <input id="fechaCreacion" type="date">
+        </label>
+        <label>
+          IVA
+          <select id="tipoIVA">
+            <option value="general">General 21%</option>
+            <option value="reducido">Reducido 10%</option>
+            <option value="superreducido">Super 4%</option>
+            <option value="sin">Sin IVA</option>
+          </select>
+        </label>
+        <label>
+          Validez dias
+          <input id="validez_dias" type="number" min="0" step="1" value="15">
+        </label>
+      </div>
+
+      <div class="section-title">Cliente</div>
+      <label>
+        Nombre
+        <input id="nombreCliente" type="text" placeholder="Nombre del cliente">
+      </label>
+      <div class="grid two">
+        <label>
+          CIF / NIF
+          <input id="dniCliente" type="text">
+        </label>
+        <label>
+          Telefono
+          <input id="clienteTelefono" type="tel">
+        </label>
+      </div>
+      <label>
+        Email
+        <input id="clienteEmail" type="email">
+      </label>
+
+      <div class="section-title">Notas internas</div>
+      <textarea id="notas" rows="5" placeholder="Notas para recordar el trabajo, visita o condiciones."></textarea>
+    </section>
+
+    <section class="panel items-panel" aria-label="Conceptos y materiales">
+      <div class="panel-header">
+        <div>
+          <div class="section-title tight">Conceptos y materiales</div>
+          <div class="hint">Puedes dejar precios en cero y usar precio cerrado.</div>
+        </div>
+        <button id="btn-add-line" type="button" class="primary small">+ Concepto</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Unidad</th>
+              <th>Cant</th>
+              <th>P.Unit</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="items-body"></tbody>
+        </table>
+      </div>
+
+      <div class="detail-box">
+        <label>
+          Descripcion del concepto seleccionado
+          <textarea id="selected-description" rows="4" placeholder="Selecciona un concepto para editar su descripcion."></textarea>
+        </label>
+      </div>
+    </section>
+
+    <aside class="panel totals-panel" aria-label="Totales y archivo">
+      <div class="section-title">Totales</div>
+      <label class="check-row">
+        <input id="usar_total_manual" type="checkbox">
+        <span>Precio cerrado</span>
+      </label>
+      <label>
+        Total final manual
+        <input id="total_manual" type="number" min="0" step="0.01" value="0">
+      </label>
+      <div class="summary">
+        <div><span>Base</span><strong id="summary-base">0.00 EUR</strong></div>
+        <div><span>IVA</span><strong id="summary-iva">0.00 EUR</strong></div>
+        <div class="total"><span>Total</span><strong id="summary-total">0.00 EUR</strong></div>
+      </div>
+
+      <div class="section-title">Borrador</div>
+      <div id="draft-status" class="status">Sin guardar</div>
+      <button id="btn-import" type="button" class="secondary full">Importar JSON</button>
+      <input id="file-import" type="file" accept=".json,application/json" hidden>
+
+      <div class="note">
+        El archivo exportado se importa desde PintAma PC con el boton "Importar doc.".
+      </div>
+    </aside>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
