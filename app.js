@@ -183,20 +183,26 @@ function renderItems() {
     }
 
     tr.innerHTML = `
-      <td><input data-field="titulo" type="text" placeholder="Concepto" value="${escapeAttr(item.titulo || item.nombre || "")}"></td>
-      <td>
+      <td data-label="Concepto"><input data-field="titulo" type="text" placeholder="Concepto" value="${escapeAttr(item.titulo || item.nombre || "")}"></td>
+      <td data-label="Unidad">
         <select data-field="unidad">
           ${unitOptions.map(([value, label]) => `<option value="${value}" ${item.unidad === value ? "selected" : ""}>${label}</option>`).join("")}
         </select>
       </td>
-      <td><input data-field="cantidad" type="number" min="0" step="0.01" value="${numberValue(item.cantidad)}"></td>
-      <td><input data-field="precioUnitario" type="number" min="0" step="0.01" value="${numberValue(item.precioUnitario)}"></td>
-      <td><input data-field="precioTotal" type="number" min="0" step="0.01" value="${numberValue(item.precioTotal)}" title="Opcional: total de esta linea"></td>
-      <td><button type="button" class="delete-line" title="Eliminar">x</button></td>
+      <td data-label="Cantidad"><input data-field="cantidad" type="number" min="0" step="0.01" value="${numberValue(item.cantidad)}"></td>
+      <td data-label="P.Unit"><input data-field="precioUnitario" type="number" min="0" step="0.01" value="${numberValue(item.precioUnitario)}"></td>
+      <td data-label="Total linea"><input data-field="precioTotal" type="number" min="0" step="0.01" value="${numberValue(item.precioTotal)}" title="Opcional: total de esta linea"></td>
+      <td data-label="Acciones"><button type="button" class="delete-line" title="Eliminar">Eliminar</button></td>
     `;
 
-    tr.addEventListener("click", () => selectItem(item.id));
+    tr.addEventListener("click", (event) => {
+      if (event.target.closest("input, select, button, textarea")) {
+        return;
+      }
+      selectItem(item.id);
+    });
     tr.querySelectorAll("input, select").forEach((input) => {
+      input.addEventListener("focus", () => setActiveItem(item.id));
       input.addEventListener("input", (event) => {
         updateItemField(item.id, event.target.dataset.field, event.target.value);
       });
@@ -227,11 +233,16 @@ function escapeAttr(value) {
 }
 
 function selectItem(id) {
-  if (state.activeItemId === id) {
-    return;
-  }
+  setActiveItem(id);
+}
+
+function setActiveItem(id) {
+  if (state.activeItemId === id) return;
   state.activeItemId = id;
-  renderItems();
+  document.querySelectorAll("#items-body tr").forEach((row) => {
+    row.classList.toggle("selected", row.dataset.id === id);
+  });
+  updateDescriptionBox();
 }
 
 function updateItemField(id, field, value) {
