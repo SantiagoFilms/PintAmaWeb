@@ -213,6 +213,9 @@ function escapeAttr(value) {
 }
 
 function selectItem(id) {
+  if (state.activeItemId === id) {
+    return;
+  }
   state.activeItemId = id;
   renderItems();
 }
