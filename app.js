@@ -403,6 +403,44 @@ function exportJson() {
   saveDraft();
 }
 
+async function shareJson() {
+  const payload = buildPintAmaFile();
+  const text = JSON.stringify(payload, null, 2);
+  const filename = makeFilename(payload.presupuesto);
+  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+
+  try {
+    const file = new File([blob], filename, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+      await navigator.share({
+        title: "Documento PintAma",
+        text: "Documento creado con PintAma Web para importar en PintAma PC.",
+        files: [file]
+      });
+      saveDraft();
+      return;
+    }
+  } catch (err) {
+    console.warn("No se pudo compartir el archivo directamente", err);
+  }
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "PintAma Web",
+        text: "Abre PintAma Web para crear o editar documentos: " + window.location.href
+      });
+      saveDraft();
+      return;
+    } catch (err) {
+      console.warn("No se pudo abrir el menu de compartir", err);
+    }
+  }
+
+  exportJson();
+  alert("Este navegador no permite compartir archivos JSON directamente. Se ha descargado el archivo para enviarlo manualmente.");
+}
+
 function makeFilename(doc) {
   const tipo = doc.tipoDocumento === "factura" ? "factura" : "presupuesto";
   const cliente = (doc.nombreCliente || "sin_nombre")
@@ -480,6 +518,7 @@ function bindEvents() {
   document.getElementById("btn-add-line").addEventListener("click", () => addItem(true));
   document.getElementById("btn-save").addEventListener("click", saveDraft);
   document.getElementById("btn-export").addEventListener("click", exportJson);
+  document.getElementById("btn-share").addEventListener("click", shareJson);
   document.getElementById("btn-new").addEventListener("click", newDocument);
   document.getElementById("btn-import").addEventListener("click", () => el.fileImport.click());
   el.fileImport.addEventListener("change", (event) => {
