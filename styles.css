@@ -69,6 +69,29 @@ body {
   justify-content: flex-end;
 }
 
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  padding: 4px;
+  border: 1px solid rgba(217, 224, 234, 0.86);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 24px rgba(23, 43, 87, 0.12);
+}
+
+.brand-text {
+  min-width: 0;
+}
+
 button {
   height: 34px;
   border: 0;
@@ -518,6 +541,11 @@ td select {
   .brand {
     font-size: 22px;
     letter-spacing: 0;
+  }
+
+  .brand-logo {
+    width: 46px;
+    height: 46px;
   }
 
   .subtitle {
