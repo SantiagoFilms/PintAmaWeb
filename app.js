@@ -7,6 +7,13 @@ const ivaRates = {
   superreducido: 0.04
 };
 
+const unitOptions = [
+  ["ud", "ud"],
+  ["m2", "m²"],
+  ["m3", "m³"],
+  ["ml", "ml"]
+];
+
 const state = {
   activeItemId: null,
   draftSavedAt: null,
@@ -177,7 +184,11 @@ function renderItems() {
 
     tr.innerHTML = `
       <td><input data-field="titulo" type="text" placeholder="Concepto" value="${escapeAttr(item.titulo || item.nombre || "")}"></td>
-      <td><input data-field="unidad" type="text" value="${escapeAttr(item.unidad || "ud")}"></td>
+      <td>
+        <select data-field="unidad">
+          ${unitOptions.map(([value, label]) => `<option value="${value}" ${item.unidad === value ? "selected" : ""}>${label}</option>`).join("")}
+        </select>
+      </td>
       <td><input data-field="cantidad" type="number" min="0" step="0.01" value="${numberValue(item.cantidad)}"></td>
       <td><input data-field="precioUnitario" type="number" min="0" step="0.01" value="${numberValue(item.precioUnitario)}"></td>
       <td><input data-field="precioTotal" type="number" min="0" step="0.01" value="${numberValue(item.precioTotal)}" title="Opcional: total de esta linea"></td>
@@ -185,8 +196,11 @@ function renderItems() {
     `;
 
     tr.addEventListener("click", () => selectItem(item.id));
-    tr.querySelectorAll("input").forEach((input) => {
+    tr.querySelectorAll("input, select").forEach((input) => {
       input.addEventListener("input", (event) => {
+        updateItemField(item.id, event.target.dataset.field, event.target.value);
+      });
+      input.addEventListener("change", (event) => {
         updateItemField(item.id, event.target.dataset.field, event.target.value);
       });
     });
