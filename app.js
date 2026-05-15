@@ -392,15 +392,19 @@ function exportJson() {
   const payload = buildPintAmaFile();
   const text = JSON.stringify(payload, null, 2);
   const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+  downloadBlob(blob, makeFilename(payload.presupuesto));
+  saveDraft();
+}
+
+function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = makeFilename(payload.presupuesto);
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-  saveDraft();
 }
 
 async function shareJson() {
@@ -408,6 +412,7 @@ async function shareJson() {
   const text = JSON.stringify(payload, null, 2);
   const filename = makeFilename(payload.presupuesto);
   const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+  const shareText = buildShareText(payload.presupuesto);
 
   try {
     const file = new File([blob], filename, { type: "application/json" });
@@ -421,6 +426,9 @@ async function shareJson() {
       return;
     }
   } catch (err) {
+    if (err && err.name === "AbortError") {
+      return;
+    }
     console.warn("No se pudo compartir el archivo directamente", err);
   }
 
@@ -428,17 +436,105 @@ async function shareJson() {
     try {
       await navigator.share({
         title: "PintAma Web",
-        text: "Abre PintAma Web para crear o editar documentos: " + window.location.href
+        text: shareText,
+        url: window.location.href
       });
       saveDraft();
       return;
     } catch (err) {
+      if (err && err.name === "AbortError") {
+        return;
+      }
       console.warn("No se pudo abrir el menu de compartir", err);
     }
   }
 
-  exportJson();
-  alert("Este navegador no permite compartir archivos JSON directamente. Se ha descargado el archivo para enviarlo manualmente.");
+  openSharePanel({ payload, text, filename, blob, shareText });
+}
+
+function buildShareText(doc) {
+  const tipo = doc.tipoDocumento === "factura" ? "factura" : "presupuesto";
+  const cliente = doc.nombreCliente || "Sin nombre";
+  return `Documento PintAma (${tipo}) para ${cliente}. Creado desde ${window.location.href}`;
+}
+
+function openSharePanel({ text, filename, blob, shareText }) {
+  closeSharePanel();
+
+  const overlay = document.createElement("div");
+  overlay.className = "share-overlay";
+  overlay.innerHTML = `
+    <div class="share-sheet" role="dialog" aria-modal="true" aria-label="Compartir documento">
+      <div class="share-head">
+        <div>
+          <strong>Compartir documento</strong>
+          <span>Elige una opcion compatible con tu dispositivo.</span>
+        </div>
+        <button type="button" class="share-close" aria-label="Cerrar">x</button>
+      </div>
+      <div class="share-grid">
+        <a class="share-option" data-share="whatsapp" href="${shareUrl("whatsapp", shareText)}" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="share-option" data-share="telegram" href="${shareUrl("telegram", shareText)}" target="_blank" rel="noopener">Telegram</a>
+        <a class="share-option" data-share="email" href="${shareUrl("email", shareText)}">Email</a>
+        <button type="button" class="share-option" data-action="copy-link">Copiar enlace</button>
+        <button type="button" class="share-option" data-action="copy-json">Copiar JSON</button>
+        <button type="button" class="share-option primary-share" data-action="download">Descargar JSON</button>
+      </div>
+      <p class="share-help">
+        Si tu navegador no muestra el menu nativo de compartir, descarga el JSON y adjuntalo en la app que prefieras.
+      </p>
+    </div>
+  `;
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay || event.target.closest(".share-close")) {
+      closeSharePanel();
+    }
+  });
+  overlay.querySelector('[data-action="copy-link"]').addEventListener("click", async () => {
+    await copyToClipboard(window.location.href);
+  });
+  overlay.querySelector('[data-action="copy-json"]').addEventListener("click", async () => {
+    await copyToClipboard(text);
+  });
+  overlay.querySelector('[data-action="download"]').addEventListener("click", () => {
+    downloadBlob(blob, filename);
+    saveDraft();
+  });
+
+  document.body.appendChild(overlay);
+}
+
+function closeSharePanel() {
+  const existing = document.querySelector(".share-overlay");
+  if (existing) {
+    existing.remove();
+  }
+}
+
+function shareUrl(type, text) {
+  const encodedText = encodeURIComponent(text);
+  const encodedUrl = encodeURIComponent(window.location.href);
+  if (type === "whatsapp") {
+    return `https://wa.me/?text=${encodedText}`;
+  }
+  if (type === "telegram") {
+    return `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`;
+  }
+  if (type === "email") {
+    return `mailto:?subject=${encodeURIComponent("Documento PintAma")}&body=${encodedText}`;
+  }
+  return "#";
+}
+
+async function copyToClipboard(value) {
+  try {
+    await navigator.clipboard.writeText(value);
+    alert("Copiado.");
+  } catch (err) {
+    console.warn("No se pudo copiar", err);
+    alert("No se pudo copiar automaticamente. Prueba descargar el JSON.");
+  }
 }
 
 function makeFilename(doc) {
