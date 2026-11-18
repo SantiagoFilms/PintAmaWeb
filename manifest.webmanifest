@@ -2,7 +2,7 @@
   "name": "PintAma Web",
   "short_name": "PintAma",
   "description": "Crear documentos para importar en PintAma PC",
-  "start_url": ".",
+  "start_url": "presupuestos.html",
   "scope": ".",
   "display": "standalone",
   "background_color": "#f5f7fb",

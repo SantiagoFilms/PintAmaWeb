@@ -16,6 +16,11 @@
   --shadow: 0 18px 42px rgba(23, 43, 87, 0.12);
 }
 
+.product-nav{display:flex;gap:5px;padding:9px 18px;background:#fff;border-bottom:1px solid #d9e0ea;overflow-x:auto}
+.product-nav a{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;color:#455a7b;font-size:14px;font-weight:700;white-space:nowrap}
+.product-nav a:hover,.product-nav a.selected{background:#e8f0ff;color:#234e9d}
+.product-nav a:focus-visible{outline:3px solid #d7b75a;outline-offset:2px}
+
 * {
   box-sizing: border-box;
 }
