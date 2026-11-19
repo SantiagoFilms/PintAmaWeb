@@ -763,3 +763,39 @@ td select {
     grid-template-columns: 1fr;
   }
 }
+
+/* Identidad visual compartida con Control de obras. */
+body {
+  background: #f5f7fb;
+  color: #15233d;
+  font-family: Arial, "Segoe UI", sans-serif;
+  font-size: 16px;
+}
+.topbar {
+  position: relative;
+  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #dce4f1;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.brand-logo { box-shadow: none; }
+.app-shell { height: calc(100vh - 118px); }
+.panel {
+  background: #fff;
+  border-color: #dce4ed;
+  box-shadow: 0 7px 24px #1b3f7d08;
+  backdrop-filter: none;
+}
+button.primary { background: #234e9d; box-shadow: none; }
+button.secondary { background: #edf3ff; }
+label { font-size: 14px; }
+input, select, textarea { background: #fff; }
+@media (max-width: 1180px) { .app-shell { height: auto; } }
+@media (max-width: 760px) {
+  body { background: #f5f7fb; }
+  .topbar { background: #fff; }
+  .app-shell { height: auto; }
+  tbody tr { background: #fff; }
+}
+
